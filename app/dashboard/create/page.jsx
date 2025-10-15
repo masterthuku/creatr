@@ -1,5 +1,6 @@
 "use client";
 
+import PostEditor from "@/components/PostEditor";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { useConvexQuery } from "@/hooks/use-convex-query";
@@ -40,7 +41,7 @@ const CreatePost = () => {
       </div>
     );
   }
-  return <div>CreatePost</div>;
+  return <PostEditor initialData ={existingDraft} mode="create"/>
 };
 
 export default CreatePost;
