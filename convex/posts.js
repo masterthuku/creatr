@@ -6,6 +6,10 @@ export const getUserDraft = query({
   handler: async (ctx) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
 
+    if (user === null) {
+      return null; 
+    }
+
     const draft = await ctx.db
       .query("posts")
       .filter((q) =>

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PostEditorHeader from "./post-editor-header";
 import PostEditorContent from "./PostEditorContent";
+import PostEditorSettings from "./PostEditorSettings";
 
 const postSchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title is too long"),
@@ -23,6 +24,7 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [imageModalType, setImageModalType] = useState("featured");
+  const [quillRef, setQuillRef] = useState(null);
 
   const router = useRouter();
 
@@ -34,7 +36,7 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
     api.posts.update
   );
 
-  useForm({
+  const form = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
       title: initialData?.title || "",
@@ -48,11 +50,11 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
     },
   });
 
-  const handleSave = () => {}
+  const handleSave = () => {};
 
-  const handlePublishing = () => {}
+  const handlePublishing = () => {};
 
-  const handleSchedule = () => {}
+  const handleSchedule = () => {};
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -69,9 +71,23 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
       />
 
       {/* editor */}
-      <PostEditorContent/>
+      <PostEditorContent
+        form={form}
+        setQuillRef={setQuillRef}
+        onImageUpload={(type) => {
+          setImageModalType(type);
+          setIsImageModalOpen(true);
+        }}
+      />
 
       {/* settings dialog */}
+
+      <PostEditorSettings
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        form={form}
+        mode={mode}
+      />
 
       {/* image upload dialog */}
     </div>

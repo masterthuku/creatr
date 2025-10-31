@@ -15,8 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -108,7 +106,7 @@ const PostEditorHeader = ({
               open={isPublishMenuOpen}
               onOpenChange={setisPublishMenuOpen}
             >
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <Button variant={"primary"} disabled={isPublishing}>
                   {isPublishing ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
