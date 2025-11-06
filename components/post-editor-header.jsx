@@ -25,7 +25,7 @@ const PostEditorHeader = ({
   onSave,
   onPublish,
   onSchedule,
-  onSettingOpen,
+  onSettingsOpen,
   onBack,
 }) => {
   const [isPublishMenuOpen, setisPublishMenuOpen] = useState(false);
@@ -63,7 +63,7 @@ const PostEditorHeader = ({
           <Button
             variant={"ghost"}
             size={"sm"}
-            onClick={onSettingOpen}
+            onClick={onSettingsOpen}
             className={"text-slate-400 hover:text-white"}
           >
             <Settings className="h-4 w-4" />
