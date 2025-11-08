@@ -455,7 +455,7 @@ const ImageUploadModal = ({
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Crop Focus" />
                         </SelectTrigger>
                         <SelectContent>
                           {SMART_CROP_OPTIONS.map((option) => (
@@ -522,7 +522,7 @@ const ImageUploadModal = ({
                       onValueChange={(value) => setValue("textPosition", value)}
                     >
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Select a position" />
                       </SelectTrigger>
                       <SelectContent>
                         {TEXT_POSITIONS.map((position) => (

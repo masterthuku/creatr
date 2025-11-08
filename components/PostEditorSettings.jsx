@@ -94,7 +94,7 @@ const PostEditorSettings = ({ isOpen, onClose, form, mode }) => {
           </div>
           <div className="space-y-3">
             <label className="text-white text-sm font-medium">Tags</label>
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 pt-2">
               <Input
                 value={tagInput}
                 onChange={(e) => setagInput(e.target.value)}

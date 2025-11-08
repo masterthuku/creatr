@@ -230,7 +230,7 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
             )}
           </div>
           {(isGenerating || isImproving) && (
-            <BarLoader width={"95%"} color="#D8B4FE" />
+            <BarLoader width={"100%"} color="#D8B4FE" />
           )}
           {/* editor */}
           <div className="prose prose-lg max-w-none">

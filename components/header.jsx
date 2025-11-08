@@ -21,7 +21,7 @@ const Header = () => {
   const { isLoading, isAuthenticated } = useStoreUser();
   const path = usePathname();
 
-  if (path.includes("/dashboard")) {
+  if (path !== "/" && path !== "/feed" && path.split("/").length >= 2) {
     return null;
   }
 
@@ -30,10 +30,13 @@ const Header = () => {
       <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-full px-4 sm:px-6 md:px-8 py-3 flex items-center justify-between gap-2">
         <Link href={isAuthenticated ? "/feed" : "/"} className="flex-shrink-0">
           <Image
-            src={"/logo.png"}
+            src="/logo.png"
             alt="logo"
             width={96}
             height={32}
+            priority
+            unoptimized={true}
+            loading="eager"
             className="h-8 sm:h-10 w-auto object-contain"
           />
         </Link>
@@ -57,33 +60,37 @@ const Header = () => {
 
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <Authenticated>
-          <Link href={"/dashboard"}>
-          <Button variant={"outline"} className={"hidden sm:flex"} size={"sm"}>
-            <LayoutDashboard className="h-4 w-4"/>
-            <span className="hidden md:inline ml-2">
-              Dashboard
-            </span>
-          </Button>
-          </Link>
-          <UserButton />
-        </Authenticated>
+            <Link href={"/dashboard"}>
+              <Button
+                variant={"outline"}
+                className={"hidden sm:flex"}
+                size={"sm"}
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                <span className="hidden md:inline ml-2">Dashboard</span>
+              </Button>
+            </Link>
+            <UserButton />
+          </Authenticated>
 
-        <Unauthenticated>
-          <SignInButton>
-            <Button size={"sm"} variant={"ghost"}>Sign In</Button>
-          </SignInButton>
-          <SignUpButton>
-            <Button
-              size={"sm"}
-              variant={"primary"}
-              className={"whitespace-nowrap"}
-            >
-              Get started
-            </Button>
-          </SignUpButton>
-        </Unauthenticated>
+          <Unauthenticated>
+            <SignInButton>
+              <Button size={"sm"} variant={"ghost"}>
+                Sign In
+              </Button>
+            </SignInButton>
+            <SignUpButton>
+              <Button
+                size={"sm"}
+                variant={"primary"}
+                className={"whitespace-nowrap"}
+              >
+                Get started
+              </Button>
+            </SignUpButton>
+          </Unauthenticated>
         </div>
-        
+
         {isLoading && (
           <div className="fixed bottom-0 left-0 w-full z-40 flex justify-center ">
             <BarLoader width={"95%"} color="#D8B4FE" />

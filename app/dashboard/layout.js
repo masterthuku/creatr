@@ -46,7 +46,7 @@ const sidebarItems = [
 const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setisSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const {data: draftPost} = useConvexQuery(api.posts.getUserDraft);
+  const { data: draftPost } = useConvexQuery(api.posts.getUserDraft);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -64,6 +64,9 @@ const DashboardLayout = ({ children }) => {
               width={96}
               height={32}
               className="h-8 sm:h-10 md:h-11 w-auto object-contain"
+              priority
+              unoptimized={true}
+              loading="eager"
             />
           </Link>
           <Button
