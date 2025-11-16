@@ -2,11 +2,15 @@
 
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { promise, success } from "zod";
 
 export const getPublishedPostsByUsername = query({
-  args: { username: v.string(), limit: v.optional(v.number()) },
+  args: {
+    username: v.string(),
+    limit: v.optional(v.number()),
+    cursor: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
+    // First get the user by username
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("username"), args.username))
@@ -16,10 +20,15 @@ export const getPublishedPostsByUsername = query({
       return { posts: [], hasMore: false };
     }
 
+    // Get published posts by this user
     let query = ctx.db
       .query("posts")
-      .filter((q) => q.eq(q.field("authorId"), user._id))
-      .filter((q) => q.eq(q.field("status"), "published"))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("authorId"), user._id),
+          q.eq(q.field("status"), "published")
+        )
+      )
       .order("desc");
 
     const limit = args.limit || 10;
@@ -28,7 +37,8 @@ export const getPublishedPostsByUsername = query({
     const hasMore = posts.length > limit;
     const finalPosts = hasMore ? posts.slice(0, limit) : posts;
 
-    const postWithAuthor = await promise.call(
+    // Add author info to each post
+    const postsWithAuthor = await Promise.all(
       finalPosts.map(async (post) => ({
         ...post,
         author: {
@@ -41,8 +51,9 @@ export const getPublishedPostsByUsername = query({
     );
 
     return {
-      posts: postWithAuthor,
+      posts: postsWithAuthor,
       hasMore,
+      nextCursor: hasMore ? finalPosts[finalPosts.length - 1]._id : null,
     };
   },
 });
