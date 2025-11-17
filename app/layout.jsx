@@ -31,13 +31,21 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
-            <ConvexClientProvider>
-              <main className="bg-slate-900 min-h-screen text-white overflow-x-hidden">
-                <Header/>
-                {children}
-              </main>
-              <Toaster richColors />
-            </ConvexClientProvider>
+            <ClerkProvider
+              publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+              appearance={{
+                baseTheme: shadesOfPurple,
+              }}
+            >
+              <ConvexClientProvider>
+                <Header />
+                <main className="bg-slate-900 min-h-screen text-white overflow-x-hidden">
+                  <Toaster richColors />
+
+                  {children}
+                </main>
+              </ConvexClientProvider>
+            </ClerkProvider>
           </ThemeProvider>
         </body>
       </html>

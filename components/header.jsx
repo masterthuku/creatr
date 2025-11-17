@@ -22,15 +22,18 @@ const Header = () => {
   const path = usePathname();
   const router = useRouter();
 
-  if (path !== "/" && path !== "/feed" && path.split("/").length >= 2) {
-    return null;
-  }
-
+  // ✅ All hooks must stay ABOVE any return
   useEffect(() => {
     if (!isLoading && isAuthenticated && path === "/") {
       router.push("/feed");
     }
-  }, [isLoading, isAuthenticated, path, router])
+  }, [isLoading, isAuthenticated, path]);
+
+
+  // ⛔ Moved BELOW hooks to avoid breaking hook order
+  if (path !== "/" && path !== "/feed" && path.split("/").length >= 2) {
+    return null;
+  }
 
   return (
     <header className="fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-3xl px-4 z-50">
@@ -68,11 +71,7 @@ const Header = () => {
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <Authenticated>
             <Link href={"/dashboard"}>
-              <Button
-                variant={"outline"}
-                className={"hidden sm:flex"}
-                size={"sm"}
-              >
+              <Button variant={"outline"} className={"hidden sm:flex"} size={"sm"}>
                 <LayoutDashboard className="h-4 w-4" />
                 <span className="hidden md:inline ml-2">Dashboard</span>
               </Button>
@@ -87,11 +86,7 @@ const Header = () => {
               </Button>
             </SignInButton>
             <SignUpButton>
-              <Button
-                size={"sm"}
-                variant={"primary"}
-                className={"whitespace-nowrap"}
-              >
+              <Button size={"sm"} variant={"primary"} className={"whitespace-nowrap"}>
                 Get started
               </Button>
             </SignUpButton>
