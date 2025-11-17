@@ -1,8 +1,7 @@
-"use server";
-
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+// Get published posts by username (for public profile)
 export const getPublishedPostsByUsername = query({
   args: {
     username: v.string(),
@@ -58,27 +57,36 @@ export const getPublishedPostsByUsername = query({
   },
 });
 
+// Get a single published post by username and post ID
 export const getPublishedPost = query({
-  args: { username: v.string(), postId: v.id("posts") },
+  args: {
+    username: v.string(),
+    postId: v.id("posts"),
+  },
   handler: async (ctx, args) => {
+    // Get the user by username
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("username"), args.username))
       .unique();
+
     if (!user) {
       return null;
     }
 
+    // Get the post
     const post = await ctx.db.get(args.postId);
 
     if (!post) {
       return null;
     }
 
+    // Verify the post belongs to this user and is published
     if (post.authorId !== user._id || post.status !== "published") {
       return null;
     }
 
+    // Return post with author info
     return {
       ...post,
       author: {
@@ -91,34 +99,43 @@ export const getPublishedPost = query({
   },
 });
 
+// Increment view count for a post
 export const incrementViewCount = mutation({
   args: { postId: v.id("posts") },
   handler: async (ctx, args) => {
     const post = await ctx.db.get(args.postId);
+
     if (!post || post.status !== "published") {
       return;
     }
 
-    await ctx.db.patch(post._id, {
+    // Update view count
+    await ctx.db.patch(args.postId, {
       viewCount: post.viewCount + 1,
     });
 
-    const today = new Date().toISOString().split("T")[0];
+    // Optional: Add daily stats tracking
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
+    // Check if we already have stats for today
     const existingStats = await ctx.db
       .query("dailyStats")
-      .filter(
-        (q) => q.eq(q.field("postId"), args.postId),
-        q.eq(q.field("date"), today)
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("postId"), args.postId),
+          q.eq(q.field("date"), today)
+        )
       )
       .unique();
 
     if (existingStats) {
+      // Update existing stats
       await ctx.db.patch(existingStats._id, {
         views: existingStats.views + 1,
         updatedAt: Date.now(),
       });
     } else {
+      // Create new daily stats entry
       await ctx.db.insert("dailyStats", {
         postId: args.postId,
         date: today,
@@ -127,6 +144,7 @@ export const incrementViewCount = mutation({
         updatedAt: Date.now(),
       });
     }
+
     return { success: true };
   },
 });
